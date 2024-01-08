@@ -7,7 +7,7 @@ from DAQ6510 import DAQ6510
 from EngineeringNotation import EngineeringNotation
 logger = logging.getLogger(__name__)
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 def countdown(timer: int) -> None:
     max_str_length = 0
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     logger.addHandler(console_handler)
     
     # Set the overall logging level
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     
     # Set logging level for module
     logging.getLogger('pyvisa').setLevel(logging.WARNING)
