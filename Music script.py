@@ -6,7 +6,7 @@ import time
 from DAQ6510 import DAQ6510
 logger = logging.getLogger(__name__)
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 def play_rick_roll_short():
     global DAQ
@@ -141,6 +141,7 @@ def play_rick_roll():
 def play_megalovania():
     global DAQ
     DAQ.beep(duration=130/1000, frequency=294)
+    DAQ.beep(duration=130/1000, frequency=294)
     DAQ.beep(duration=261/1000, frequency=587)
     DAQ.beep(duration=391/1000, frequency=440)
     DAQ.beep(duration=261/1000, frequency=415)
@@ -163,7 +164,7 @@ def countdown(timer: int) -> None:
         time.sleep(1)
 
 def main() -> None:
-    ip = '10.125.0.73'
+    ip = '169.254.42.246'
     intrument_string = f'TCPIPn::{ip}::inst0::INSTR'
     timeout = 5000
     
@@ -172,8 +173,9 @@ def main() -> None:
     DAQ = DAQ6510()
     DAQ.connect(rm, intrument_string, timeout)
     
-    #play_megalovania()
-    play_rick_roll_short()
+    play_megalovania()
+    #play_rick_roll()
+    #play_rick_roll_short()
 
 if __name__ == '__main__':
     # Clear latest.log if it exists
@@ -193,7 +195,7 @@ if __name__ == '__main__':
     logger.addHandler(console_handler)
     
     # Set the overall logging level
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     
     # Set logging level for module
     logging.getLogger('pyvisa').setLevel(logging.WARNING)
