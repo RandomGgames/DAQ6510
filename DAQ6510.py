@@ -5,7 +5,7 @@ import typing
 from enum import Enum
 logger = logging.getLogger(__name__)
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 class DAQ6510:
     user_manual = 'https://download.tek.com/manual/DAQ6510-900-01B_Aug_2019_User.pdf'
@@ -333,7 +333,7 @@ if __name__ == '__main__':
     logger.addHandler(console_handler)
     
     # Set the overall logging level
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     
     try:
         main()
