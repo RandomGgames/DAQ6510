@@ -7,6 +7,8 @@ from DAQ6510 import DAQ6510
 from EngineeringNotation import EngineeringNotation
 logger = logging.getLogger(__name__)
 
+__version__ = '1.0.0'
+
 def countdown(timer: int) -> None:
     max_str_length = 0
     
@@ -51,17 +53,26 @@ def main() -> None:
     logger.info(f'Percent Difference: {round(percent_difference, 2)}%')
 
 if __name__ == '__main__':
-    #if os.path.exists('latest.log'): open('latest.log', 'w').close() # Clear latest.log if it exists
-    logging.basicConfig(
-        level = logging.INFO,
-        format = '%(asctime)s.%(msecs)03d %(levelname)s: %(message)s',
-        datefmt = '%Y-%m-%d %H:%M:%S',
-        encoding = 'utf-8',
-        handlers = [
-            logging.FileHandler('latest.log', encoding = 'utf-8'),
-            logging.StreamHandler(sys.stdout)
-        ]
-    )
+    # Clear latest.log if it exists
+    if os.path.exists('latest.log'):
+        open('latest.log', 'w').close()
+    
+    # File handler
+    file_handler = logging.FileHandler('latest.log', encoding='utf-8')
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(logging.Formatter('%(asctime)s.%(msecs)03d %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
+    logger.addHandler(file_handler)
+    
+    # Console handler
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(logging.Formatter('%(asctime)s.%(msecs)03d %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
+    logger.addHandler(console_handler)
+    
+    # Set the overall logging level
+    logger.setLevel(logging.INFO)
+    
+    # Set logging level for module
     logging.getLogger('pyvisa').setLevel(logging.WARNING)
     
     try:
