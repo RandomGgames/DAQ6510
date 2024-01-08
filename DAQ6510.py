@@ -5,7 +5,7 @@ import typing
 from enum import Enum
 logger = logging.getLogger(__name__)
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 class DAQ6510:
     user_manual = 'https://download.tek.com/manual/DAQ6510-900-01B_Aug_2019_User.pdf'
@@ -316,19 +316,24 @@ def main() -> None:
     pass
 
 if __name__ == '__main__':
-    if os.path.exists('latest.log'): open('latest.log', 'w').close() # Clear latest.log if it exists
+    # Clear latest.log if it exists
+    if os.path.exists('latest.log'):
+        open('latest.log', 'w').close()
     
-    # Set up logger
-    logging.basicConfig(
-        level = logging.INFO,
-        format = '%(asctime)s.%(msecs)03d %(levelname)s: %(message)s',
-        datefmt = '%Y-%m-%d %H:%M:%S',
-        encoding = 'utf-8',
-        handlers = [
-            logging.FileHandler('latest.log', encoding = 'utf-8'),
-            logging.StreamHandler(sys.stdout)
-        ]
-    )
+    # File handler
+    file_handler = logging.FileHandler('latest.log', encoding='utf-8')
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(logging.Formatter('%(asctime)s.%(msecs)03d %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
+    logger.addHandler(file_handler)
+    
+    # Console handler
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(logging.Formatter('%(asctime)s.%(msecs)03d %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
+    logger.addHandler(console_handler)
+    
+    # Set the overall logging level
+    logger.setLevel(logging.INFO)
     
     try:
         main()
