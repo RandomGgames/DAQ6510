@@ -5,7 +5,7 @@ import sys
 import time
 from DAQ6510 import DAQ6510
 from EngineeringNotation import EngineeringNotation
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 __version__ = '1.0.1'
 
