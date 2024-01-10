@@ -36,21 +36,24 @@ def main() -> None:
     
     DAQ.set_function('RESISTANCE')
     
-    countdown(10)
-    logger.debug(f'Measuring value1...')
-    measure1 = DAQ.measure()
-    logger.debug(f'{measure1 = }')
-    logger.info(f'Value 1: {EngineeringNotation(measure1).get_si_form("Ω")}')
+    #countdown(10)
+    #logger.debug(f'Measuring value1...')
+    #measure1 = DAQ.measure()
+    #logger.debug(f'{measure1 = }')
+    #logger.info(f'Value 1: {EngineeringNotation(measure1).get_si_form("Ω")}')
     
-    countdown(10)
-    logger.debug(f'Measuring value2...')
-    measure2 = DAQ.measure()
-    logger.debug(f'{measure2 = }')
-    logger.info(f'Value 2: {EngineeringNotation(measure2).get_si_form("Ω")}')
+    #countdown(10)
+    #logger.debug(f'Measuring value2...')
+    #measure2 = DAQ.measure()
+    #logger.debug(f'{measure2 = }')
+    #logger.info(f'Value 2: {EngineeringNotation(measure2).get_si_form("Ω")}')
     
-    percent_difference = (abs(measure1-measure2)) / measure1 * 100
-    logger.debug(f'{percent_difference = }')
-    logger.info(f'Percent Difference: {round(percent_difference, 2)}%')
+    #percent_difference = (abs(measure1-measure2)) / measure1 * 100
+    #logger.debug(f'{percent_difference = }')
+    #logger.info(f'Percent Difference: {round(percent_difference, 2)}%')
+    
+    measure = DAQ.measure()
+    logger.info(f'{measure = }')
 
 if __name__ == '__main__':
     # Clear latest.log if it exists
