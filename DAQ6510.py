@@ -3,9 +3,9 @@ import os
 import sys
 import typing
 from enum import Enum
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
 class DAQ6510:
     user_manual = 'https://download.tek.com/manual/DAQ6510-900-01B_Aug_2019_User.pdf'
@@ -300,17 +300,6 @@ class DAQ6510:
         TH2252 = 0
         TH5K = 1
         TH10K = 2
-
-def play_megalovania(DAQ):
-    DAQ.beep(duration=130/1000, frequency=294)
-    DAQ.beep(duration=261/1000, frequency=587)
-    DAQ.beep(duration=391/1000, frequency=440)
-    DAQ.beep(duration=261/1000, frequency=415)
-    DAQ.beep(duration=261/1000, frequency=392)
-    DAQ.beep(duration=261/1000, frequency=349)
-    DAQ.beep(duration=130/1000, frequency=294)
-    DAQ.beep(duration=130/1000, frequency=349)
-    DAQ.beep(duration=130/1000, frequency=392)
 
 def main() -> None:
     pass
