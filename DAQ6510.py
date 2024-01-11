@@ -5,7 +5,7 @@ import typing
 from enum import Enum
 logger = logging.getLogger()
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 class DAQ6510:
     user_manual = 'https://download.tek.com/manual/DAQ6510-900-01B_Aug_2019_User.pdf'
@@ -19,54 +19,49 @@ class DAQ6510:
         try:
             self.instrument = resource_manager.open_resource(resource_name)
             self.instrument_name = resource_name
-            logger.debug(f'Connected to "{resource_name}"')
+            logger.debug(f'DAQ6510: Connected to "{resource_name}"')
         except Exception as e:
-            logger.error(f'Could not connect to "{resource_name}" due to {repr(e)}')
+            logger.error(f'DAQ6510: Could not connect to "{resource_name}" due to {repr(e)}')
             raise e
         if reset:
-            logger.debug(f'Resetting device...')
             self.send_command('reset()')
-            logger.debug(f'Reset device.')
+            logger.debug(f'DAQ6510: Reset device.')
         if clear:
-            logger.debug(f'Clearing device...')
             self.instrument.clear()
-            logger.debug(f'Cleared device.')
+            logger.debug(f'DAQ6510: Cleared device.')
         self.instrument.timeout = timeout
     
     def disconnect(self) -> True or Exception:
-        logger.debug(f'Disconnecting from "{self.instrument_name}"...')
         try:
             self.instrument.close()
-            logger.debug(f'Disconnected from "{self.instrument_name}"')
+            logger.debug(f'DAQ6510: Disconnected from "{self.instrument_name}"')
             return True
         except Exception as e:
-            logger.error(f'An error occured while disconnecting from {self.instrument_name} due to {repr(e)}')
+            logger.error(f'DAQ6510: An error occured while disconnecting from {self.instrument_name} due to {repr(e)}')
             raise e
     
     def query_command(self, command):
-        logger.debug(f'Querying command: "{command}"...')
         try:
             query = self.instrument.query(command)
-            logger.debug(f'Queried command.')
+            logger.debug(f'DAQ6510: Queried command "{command}".')
             return query
         except Exception as e:
-            logger.error(f'An error occured while querying command due to {repr(e)}')
+            logger.error(f'DAQ6510: An error occured while querying command due to {repr(e)}')
             raise e
     
     def send_command(self, command):
         try:
             self.instrument.write(command)
-            logger.debug(f'Sent command "{command}".')
+            logger.debug(f'DAQ6510: Sent command "{command}".')
         except Exception as e:
             logger.error(f'An error occured while sending command "{command}" due to {repr(e)}')
     
     def beep(self, duration, frequency) -> None:
-        logger.debug(f'Sending beep at {frequency}hz for {duration}s...')
         try:
             self.send_command(f'beeper.beep({duration}, {frequency})')
-            logger.debug(f'Sent beep.')
+            logger.debug(f'DAQ6510: Sent beep at {frequency}hz for {duration}s.')
         except Exception as e:
-            logger.warning(f'An error occured while sending beep due to {repr(e)}')
+            logger.warning(f'DAQ6510: An error occured while sending beep due to {repr(e)}')
     
     def reset(self) -> None:
         self.send_command('reset()')
