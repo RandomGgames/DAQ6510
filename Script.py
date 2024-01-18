@@ -1,3 +1,4 @@
+import keyboard
 import logging
 import os
 import pyvisa
@@ -21,6 +22,58 @@ def countdown(timer: int) -> None:
         timer -= 1
         time.sleep(1)
 
+i = 0
+measurements = 2
+measure1 = list(None for _ in range(measurements))
+measure2 = list(None for _ in range(measurements))
+
+units = None
+
+def keyboard_event(event):
+    match event.event_type:
+        case 'down':
+            match event.is_keypad:
+                case True:
+                    match event.name:
+                        case '+':
+                            global i
+                            global measure1
+                            global measure2
+                            global units
+                            
+                            if i < measurements:
+                                measure1[i] = DAQ.measure()
+                                DAQ.beep(0.1, 300)
+                                logger.info(f'measure1[{i}] = {EngineeringNotation(measure1[i]).get_si_form(units)}')
+                                i += 1
+                            elif i >= measurements and i < measurements * 2:
+                                j = i - measurements
+                                measure2[j] = DAQ.measure()
+                                DAQ.beep(0.1, 300)
+                                logger.info(f'measure2[{j}] = {EngineeringNotation(measure2[j]).get_si_form(units)}')
+                                i += 1
+                            
+                            if i == measurements * 2:
+                                for k in range(measurements):
+                                    percent_difference = ( (abs(measure1[k]-measure2[k])) / measure1[k] ) * 100
+                                    logger.debug(f'{percent_difference = }')
+                                    logger.info(f'measure1[{k}] = {EngineeringNotation(measure1[k]).get_si_form(units)}, measure2[{k}] = {EngineeringNotation(measure2[k]).get_si_form(units)}, %Diff: {round(percent_difference, 2)}%')
+                                measure1 = list(None for _ in range(measurements))
+                                measure2 = list(None for _ in range(measurements))
+                                i = 0
+                
+                case False:
+                    match event.name:
+                        case 'r':
+                            DAQ.set_function('RESISTANCE')
+                            logger.info(f'Set function to Resistance.')
+                            units = 'Ω'
+                        
+                        case 'v':
+                            DAQ.set_function('DC_VOLTAGE')
+                            logger.info(f'Set function to DC-Voltage.')
+                            units = 'V'
+
 def main() -> None:
     ip = '10.125.0.73'
     intrument_string = f'TCPIPn::{ip}::inst0::INSTR'
@@ -34,26 +87,8 @@ def main() -> None:
     DAQ.set_measurement_filter_state('ON')
     DAQ.set_measurement_filter_count(20)
     
-    DAQ.set_function('RESISTANCE')
-    
-    #countdown(10)
-    #logger.debug(f'Measuring value1...')
-    #measure1 = DAQ.measure()
-    #logger.debug(f'{measure1 = }')
-    #logger.info(f'Value 1: {EngineeringNotation(measure1).get_si_form("Ω")}')
-    
-    #countdown(10)
-    #logger.debug(f'Measuring value2...')
-    #measure2 = DAQ.measure()
-    #logger.debug(f'{measure2 = }')
-    #logger.info(f'Value 2: {EngineeringNotation(measure2).get_si_form("Ω")}')
-    
-    #percent_difference = (abs(measure1-measure2)) / measure1 * 100
-    #logger.debug(f'{percent_difference = }')
-    #logger.info(f'Percent Difference: {round(percent_difference, 2)}%')
-    
-    measure = DAQ.measure()
-    logger.info(f'{measure = }')
+    keyboard.hook(keyboard_event)
+    keyboard.wait()
 
 if __name__ == '__main__':
     # Clear latest.log if it exists
