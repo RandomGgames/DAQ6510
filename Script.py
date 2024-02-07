@@ -5,10 +5,9 @@ import pyvisa
 import sys
 import time
 from DAQ6510 import DAQ6510
-from EngineeringNotation import EngineeringNotation
 logger = logging.getLogger()
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 def countdown(timer: int) -> None:
     max_str_length = 0
@@ -26,7 +25,6 @@ i = 0
 measurements = 2
 measure1 = list(None for _ in range(measurements))
 measure2 = list(None for _ in range(measurements))
-
 units = None
 
 def keyboard_event(event):
@@ -44,20 +42,20 @@ def keyboard_event(event):
                             if i < measurements:
                                 measure1[i] = DAQ.measure()
                                 DAQ.beep(0.1, 300)
-                                logger.info(f'measure1[{i}] = {EngineeringNotation(measure1[i]).get_si_form(units)}')
+                                logger.info(f'{measure1[i] = }')
                                 i += 1
                             elif i >= measurements and i < measurements * 2:
                                 j = i - measurements
                                 measure2[j] = DAQ.measure()
                                 DAQ.beep(0.1, 300)
-                                logger.info(f'measure2[{j}] = {EngineeringNotation(measure2[j]).get_si_form(units)}')
+                                logger.info(f'{measure2[j] = }')
                                 i += 1
                             
                             if i == measurements * 2:
                                 for k in range(measurements):
                                     percent_difference = ( (abs(measure1[k]-measure2[k])) / measure1[k] ) * 100
                                     logger.debug(f'{percent_difference = }')
-                                    logger.info(f'measure1[{k}] = {EngineeringNotation(measure1[k]).get_si_form(units)}, measure2[{k}] = {EngineeringNotation(measure2[k]).get_si_form(units)}, %Diff: {round(percent_difference, 2)}%')
+                                    logger.info(f'{measure1[k] = }, {measure2[k] = }, %Diff: {round(percent_difference, 2)}%')
                                 measure1 = list(None for _ in range(measurements))
                                 measure2 = list(None for _ in range(measurements))
                                 i = 0
@@ -75,7 +73,7 @@ def keyboard_event(event):
                             units = 'V'
 
 def main() -> None:
-    ip = '10.125.0.73'
+    ip = '10.125.250.74'
     intrument_string = f'TCPIPn::{ip}::inst0::INSTR'
     timeout = 5000
     
@@ -85,7 +83,8 @@ def main() -> None:
     DAQ.connect(rm, intrument_string, timeout)
     
     DAQ.set_measurement_filter_state('ON')
-    DAQ.set_measurement_filter_count(20)
+    DAQ.set_measurement_filter_count(10)
+    DAQ.set_function('DC_VOLTAGE')
     
     keyboard.hook(keyboard_event)
     keyboard.wait()
