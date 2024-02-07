@@ -164,7 +164,7 @@ def countdown(timer: int) -> None:
         time.sleep(1)
 
 def main() -> None:
-    ip = '169.254.42.246'
+    ip = '10.125.250.74'
     intrument_string = f'TCPIPn::{ip}::inst0::INSTR'
     timeout = 5000
     
@@ -175,7 +175,7 @@ def main() -> None:
     
     play_megalovania()
     #play_rick_roll()
-    #play_rick_roll_short()
+    play_rick_roll_short()
 
 if __name__ == '__main__':
     # Clear latest.log if it exists
